@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Volume Renderer — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">3D Volume Renderer</span>
+    </div>
+  </nav>
+
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">VTK</span><span class="tag">3D Slicer</span><span class="tag">Transfer Functions</span><span class="tag">No AI</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">3D Volume Renderer</h1>
+    <p class="text-slate-400 text-lg mb-12">
+      Pure VTK/Slicer Python — custom multi-layer transfer functions that isolate
+      bone, soft tissue, and vessels from a raw chest CT.
+      Exported as a 360° turntable animation.
+    </p>
+
+    <!-- Animated preview -->
+    <div class="bg-card rounded-2xl border border-slate-700 overflow-hidden mb-12">
+      <div class="relative h-64 md:h-96 flex items-center justify-center">
+        <canvas id="vtk-preview" class="absolute inset-0 w-full h-full"></canvas>
+        <div class="relative z-10 text-center">
+          <p class="text-slate-500 text-sm font-mono">[ GIF / MP4 render goes here after running export_turntable() ]</p>
+          <p class="text-slate-600 text-xs mt-2">Replace this with your exported turntable animation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 preset comparison -->
+    <h2 class="text-xl font-bold text-white mb-6">Transfer Function Presets</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <div class="bg-card rounded-xl border border-slate-700 overflow-hidden">
+        <canvas class="preset-canvas w-full" height="140" data-preset="chest_full"></canvas>
+        <p class="text-center text-slate-400 text-xs py-2 font-mono">chest_full</p>
+      </div>
+      <div class="bg-card rounded-xl border border-slate-700 overflow-hidden">
+        <canvas class="preset-canvas w-full" height="140" data-preset="bone"></canvas>
+        <p class="text-center text-slate-400 text-xs py-2 font-mono">bone</p>
+      </div>
+      <div class="bg-card rounded-xl border border-slate-700 overflow-hidden">
+        <canvas class="preset-canvas w-full" height="140" data-preset="vessels"></canvas>
+        <p class="text-center text-slate-400 text-xs py-2 font-mono">vessels</p>
+      </div>
+      <div class="bg-card rounded-xl border border-slate-700 overflow-hidden">
+        <canvas class="preset-canvas w-full" height="140" data-preset="soft_tissue"></canvas>
+        <p class="text-center text-slate-400 text-xs py-2 font-mono">soft_tissue</p>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Data</p>
+        <p class="text-white font-semibold">NLST Chest CT</p>
+        <p class="text-slate-400 text-sm">Non-contrast, TCIA public collection</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Renderer</p>
+        <p class="text-white font-semibold">VTK GPU Ray Cast</p>
+        <p class="text-slate-400 text-sm">Phong shading, linear interpolation</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Export</p>
+        <p class="text-white font-semibold">72-frame GIF/MP4</p>
+        <p class="text-slate-400 text-sm">360° turntable, 800×800 px, 24 fps</p>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <h2 class="text-xl font-bold text-white mb-4">How Transfer Functions Work</h2>
+    <div class="bg-card rounded-xl border border-slate-700 p-6 mb-8">
+      <canvas id="tf-diagram" width="700" height="160"></canvas>
+    </div>
+
+    <!-- Code -->
+    <h2 class="text-xl font-bold text-white mb-4">Usage — Slicer Python Console</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-slate-500"># 1. Load CT in Slicer: File → Add DICOM Data → your folder
+# 2. Open Python console: View → Python Interactor</span>
+
+exec(open(<span class="text-emerald-400">'/path/to/volume_renderer.py'</span>).read())
+
+<span class="text-slate-500"># Apply a preset</span>
+apply_preset(<span class="text-emerald-400">'chest_full'</span>)   <span class="text-slate-500"># or 'bone' | 'vessels' | 'soft_tissue'</span>
+
+<span class="text-slate-500"># Export 360° turntable GIF</span>
+export_turntable(<span class="text-emerald-400">'./chest_full.gif'</span>, n_frames=72, fps=24)
+
+<span class="text-slate-500"># Export all 4 presets as PNGs for portfolio</span>
+export_all_presets(<span class="text-emerald-400">'./renders'</span>)</code></pre>
+
+    <div class="flex gap-4">
+      <a href="https://github.com/Kwang316/Kwang316.github.io" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://www.cancerimagingarchive.net/collection/nlst/" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">NLST Dataset (TCIA)</a>
+    </div>
+
+  </main>
+
+  <script>
+    // Transfer function diagram
+    const tfCanvas = document.getElementById('tf-diagram');
+    const tc = tfCanvas.getContext('2d');
+    tfCanvas.width = tfCanvas.parentElement.offsetWidth - 48;
+    const TW = tfCanvas.width, TH = 160;
+
+    const huMin = -1000, huMax = 1200;
+    const layers = [
+      { label: 'Air',         hu: -1000, color: '#1e293b' },
+      { label: 'Fat',         hu:  -100, color: '#d97706' },
+      { label: 'Soft Tissue', hu:    40, color: '#ea580c' },
+      { label: 'Vessels',     hu:   200, color: '#dc2626' },
+      { label: 'Bone',        hu:   400, color: '#e2e8f0' },
+    ];
+
+    const grad = tc.createLinearGradient(0, 0, TW, 0);
+    grad.addColorStop(0,    '#000000');
+    grad.addColorStop(0.09, '#111827');
+    grad.addColorStop(0.41, '#d97706');
+    grad.addColorStop(0.55, '#ea580c');
+    grad.addColorStop(0.65, '#dc2626');
+    grad.addColorStop(0.78, '#e2e8f0');
+    grad.addColorStop(1.0,  '#ffffff');
+    tc.fillStyle = grad;
+    tc.fillRect(0, 40, TW, 60);
+
+    layers.forEach(l => {
+      const x = TW * (l.hu - huMin) / (huMax - huMin);
+      tc.strokeStyle = 'rgba(255,255,255,0.15)';
+      tc.lineWidth = 1;
+      tc.beginPath(); tc.moveTo(x, 30); tc.lineTo(x, 110); tc.stroke();
+      tc.fillStyle = '#94a3b8';
+      tc.font = '10px JetBrains Mono';
+      tc.textAlign = 'center';
+      tc.fillText(l.label, x, 20);
+      tc.fillText(l.hu + ' HU', x, 125);
+    });
+
+    tc.fillStyle = '#475569';
+    tc.font = '10px Inter';
+    tc.textAlign = 'left';
+    tc.fillText('HU →', 4, TH - 4);
+
+    // Preset canvas diagrams
+    const presetDefs = {
+      chest_full:  ['#000000', '#d97706', '#ea580c', '#dc2626', '#e2e8f0', '#ffffff'],
+      bone:        ['#000000', '#000000', '#000000', '#c8b89a', '#f0ede8', '#ffffff'],
+      vessels:     ['#000000', '#000000', '#dc2626', '#f97316', '#000000', '#000000'],
+      soft_tissue: ['#000000', '#000000', '#c2855a', '#e0a070', '#000000', '#000000'],
+    };
+    document.querySelectorAll('.preset-canvas').forEach(cv => {
+      const preset = cv.dataset.preset;
+      const stops  = presetDefs[preset];
+      cv.width = cv.parentElement.offsetWidth;
+      const ctx = cv.getContext('2d');
+      const W = cv.width, H = 140;
+      const g = ctx.createLinearGradient(0, 0, W, 0);
+      stops.forEach((c, i) => g.addColorStop(i / (stops.length - 1), c));
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, H * 0.2, W, H * 0.6);
+    });
+
+    // Main preview canvas — spinning wireframe sphere (placeholder)
+    const pv = document.getElementById('vtk-preview');
+    const pc = pv.getContext('2d');
+    pv.width  = pv.parentElement.offsetWidth;
+    pv.height = pv.parentElement.offsetHeight;
+    let angle = 0;
+    function drawPreview() {
+      const W = pv.width, H = pv.height, cx = W/2, cy = H/2, R = Math.min(W, H) * 0.35;
+      pc.clearRect(0, 0, W, H);
+      pc.fillStyle = '#0f172a';
+      pc.fillRect(0, 0, W, H);
+      const rings = 8;
+      for (let r = 0; r < rings; r++) {
+        const phi = (r / (rings - 1)) * Math.PI;
+        const rr  = Math.sin(phi) * R;
+        const y   = cy - Math.cos(phi) * R * 0.5;
+        const alpha = 0.08 + 0.12 * Math.sin(phi);
+        pc.beginPath();
+        pc.ellipse(cx, y, rr, rr * 0.3, 0, 0, Math.PI * 2);
+        pc.strokeStyle = `rgba(14,165,233,${alpha})`;
+        pc.lineWidth = 1;
+        pc.stroke();
+      }
+      const meridians = 12;
+      for (let m = 0; m < meridians; m++) {
+        const a = angle + (m / meridians) * Math.PI * 2;
+        pc.beginPath();
+        for (let t = 0; t <= 64; t++) {
+          const phi = (t / 64) * Math.PI;
+          const x = cx + Math.cos(a) * Math.sin(phi) * R;
+          const y = cy - Math.cos(phi) * R * 0.5 + Math.sin(a) * Math.sin(phi) * R * 0.15;
+          t === 0 ? pc.moveTo(x, y) : pc.lineTo(x, y);
+        }
+        const alpha = 0.05 + 0.15 * Math.abs(Math.cos(a));
+        pc.strokeStyle = `rgba(14,165,233,${alpha})`;
+        pc.lineWidth = 1;
+        pc.stroke();
+      }
+      angle += 0.008;
+      requestAnimationFrame(drawPreview);
+    }
+    drawPreview();
+  </script>
+</body>
+</html>
