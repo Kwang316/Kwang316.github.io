@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DICOM-RT-Dose-Viz — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">DICOM-RT-Dose-Viz</span>
+    </div>
+  </nav>
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">SlicerRT</span><span class="tag">TCIA</span><span class="tag">DVH</span><span class="tag">Plotly</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">DICOM-RT-Dose-Viz</h1>
+    <p class="text-slate-400 text-lg mb-12">Radiation therapy dose color-mapping on Head-Neck CT with interactive Dose-Volume Histogram (DVH) curves rendered in the browser.</p>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Dataset</p>
+        <p class="text-white font-semibold">TCIA Head-Neck</p>
+        <p class="text-slate-400 text-sm">215 cases with CT, RTSTRUCT, RTDOSE, RTPLAN</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Structures</p>
+        <p class="text-white font-semibold">OAR Analysis</p>
+        <p class="text-slate-400 text-sm">Parotid, spinal cord, mandible dose constraints</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Output</p>
+        <p class="text-white font-semibold">Interactive DVH</p>
+        <p class="text-slate-400 text-sm">Embedded Plotly chart with per-structure curves</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">DVH Computation</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-slate-500"># dvh_compute.py</span>
+<span class="text-primary">import</span> pydicom, numpy <span class="text-primary">as</span> np
+
+<span class="text-primary">def</span> <span class="text-sky-300">compute_dvh</span>(dose_dcm_path, structure_mask: np.ndarray):
+    ds    = pydicom.dcmread(dose_dcm_path)
+    dose  = ds.pixel_array * float(ds.DoseGridScaling)  <span class="text-slate-500"># → Gy</span>
+    dose_in_struct = dose[structure_mask > 0]
+
+    bins      = np.linspace(0, dose.max(), 200)
+    hist, _   = np.histogram(dose_in_struct, bins=bins)
+    cum_dvh   = 1 - np.cumsum(hist) / hist.sum()        <span class="text-slate-500"># cumulative DVH</span>
+    <span class="text-primary">return</span> bins[:-1].tolist(), cum_dvh.tolist()
+
+<span class="text-slate-500"># Key constraints checked:  D2% parotid ≤ 26 Gy, Dmax cord ≤ 45 Gy</span></code></pre>
+
+    <!-- Inline DVH chart -->
+    <h2 class="text-xl font-bold text-white mb-4">Sample DVH — Head-Neck OARs</h2>
+    <div class="bg-card rounded-xl border border-slate-700 p-6 mb-8">
+      <canvas id="dvh-chart" height="220"></canvas>
+    </div>
+
+    <div class="flex gap-4">
+      <a href="https://github.com" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://www.cancerimagingarchive.net/collection/head-neck-pet-ct/" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">TCIA Dataset</a>
+    </div>
+  </main>
+  <script>
+    const canvas = document.getElementById('dvh-chart');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.offsetWidth - 48;
+    canvas.height = 220;
+    const W = canvas.width, H = canvas.height;
+    const pad = { t: 20, r: 120, b: 40, l: 60 };
+    const gW = W - pad.l - pad.r, gH = H - pad.t - pad.b;
+    const maxDose = 70;
+
+    function dvhCurve(d50, steepness) {
+      return Array.from({ length: 100 }, (_, i) => {
+        const d = i * maxDose / 100;
+        return 1 / (1 + Math.exp((d - d50) * steepness));
+      });
+    }
+
+    const structures = [
+      { name: 'PTV',       color: '#0ea5e9', curve: dvhCurve(60, 0.2)  },
+      { name: 'L Parotid', color: '#34d399', curve: dvhCurve(22, 0.25) },
+      { name: 'R Parotid', color: '#a78bfa', curve: dvhCurve(26, 0.22) },
+      { name: 'Spinal Cord', color: '#f87171', curve: dvhCurve(18, 0.4) },
+    ];
+
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
+    for (let v = 0; v <= 1.0; v += 0.25) {
+      const y = pad.t + gH * (1 - v);
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + gW, y); ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.font = '11px Inter'; ctx.textAlign = 'right';
+      ctx.fillText((v * 100).toFixed(0) + '%', pad.l - 6, y + 4);
+    }
+    for (let d = 0; d <= maxDose; d += 10) {
+      const x = pad.l + gW * d / maxDose;
+      ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + gH); ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+      ctx.fillText(d + ' Gy', x, H - 8);
+    }
+
+    structures.forEach((s, si) => {
+      ctx.beginPath();
+      s.curve.forEach((v, i) => {
+        const x = pad.l + gW * i / 100;
+        const y = pad.t + gH * (1 - v);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = s.color; ctx.font = '11px Inter'; ctx.textAlign = 'left';
+      ctx.fillText(s.name, pad.l + gW + 8, pad.t + si * 20 + 14);
+    });
+  </script>
+</body>
+</html>

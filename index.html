@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Imaging Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            dark: '#0f172a',
+            card: '#1e293b',
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span class="font-mono text-primary font-semibold tracking-tight">med-imaging.dev</span>
+      <div class="flex gap-8 text-sm text-slate-400">
+        <a href="#about"    class="hover:text-white transition">About</a>
+        <a href="#projects" class="hover:text-white transition">Projects</a>
+        <a href="#stack"    class="hover:text-white transition">Stack</a>
+        <a href="#contact"  class="hover:text-white transition">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full opacity-40"></canvas>
+    <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+      <p class="font-mono text-primary text-sm tracking-widest uppercase mb-4">Medical Imaging Engineer</p>
+      <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
+        3D Slicer &amp; <br/>Clinical Image Computing
+      </h1>
+      <p class="text-slate-400 text-lg mb-10 leading-relaxed">
+        Segmentation pipelines · Python scripting · Clinical visualization · DICOM workflows
+      </p>
+      <div class="flex gap-4 justify-center">
+        <a href="#projects" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition">View Projects</a>
+        <a href="https://github.com" target="_blank" class="border border-slate-600 hover:border-primary text-slate-300 hover:text-white px-6 py-3 rounded-lg font-semibold transition">GitHub</a>
+      </div>
+    </div>
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-24 px-6 max-w-6xl mx-auto">
+    <p class="font-mono text-primary text-xs tracking-widest uppercase mb-2">01 / about</p>
+    <h2 class="text-3xl font-bold text-white mb-12">Skills &amp; Expertise</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <!-- skill cards -->
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">3D Slicer</h3>
+        <p class="text-slate-400 text-sm">Custom extensions, scripted modules, SlicerAI</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">Python</h3>
+        <p class="text-slate-400 text-sm">SimpleITK, PyDICOM, MONAI, NumPy, nibabel</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">Segmentation</h3>
+        <p class="text-slate-400 text-sm">nnU-Net, TotalSegmentator, ITK-SNAP</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">DICOM / PACS</h3>
+        <p class="text-slate-400 text-sm">pynetdicom, OHIF, Orthanc, WADO-RS</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">VTK / ITK</h3>
+        <p class="text-slate-400 text-sm">Volume rendering, mesh processing, filters</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">ML / DL</h3>
+        <p class="text-slate-400 text-sm">PyTorch, MONAI, model inference pipelines</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">Visualization</h3>
+        <p class="text-slate-400 text-sm">VTK.js, Plotly, Dash, Cornerstone.js</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700 hover:border-primary transition">
+        <div class="text-primary text-2xl mb-3">⬡</div>
+        <h3 class="font-semibold text-white mb-1">Clinical RT</h3>
+        <p class="text-slate-400 text-sm">SlicerRT, DVH, dose-volume analysis</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="py-24 px-6 bg-slate-900/40">
+    <div class="max-w-6xl mx-auto">
+      <p class="font-mono text-primary text-xs tracking-widest uppercase mb-2">02 / projects</p>
+      <h2 class="text-3xl font-bold text-white mb-12">Featured Work</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Project 1 -->
+        <div class="project-card bg-card rounded-xl border border-slate-700 hover:border-primary transition overflow-hidden group">
+          <div class="h-44 bg-gradient-to-br from-sky-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+            <canvas class="seg-preview w-full h-full absolute inset-0" data-color="#0ea5e9"></canvas>
+            <span class="relative z-10 text-6xl">🧠</span>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              <span class="tag">MONAI</span><span class="tag">BraTS</span><span class="tag">SlicerAI</span>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">AutoSeg-Brain</h3>
+            <p class="text-slate-400 text-sm mb-4">Automated brain tumor segmentation on BraTS multimodal MRI. Python module with auto-inference, label overlay, and PDF report export.</p>
+            <div class="flex gap-3">
+              <a href="projects/autoseg-brain.html" class="text-primary text-sm hover:underline">Case Study →</a>
+              <a href="https://github.com" target="_blank" class="text-slate-500 text-sm hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card bg-card rounded-xl border border-slate-700 hover:border-primary transition overflow-hidden">
+          <div class="h-44 bg-gradient-to-br from-red-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+            <canvas class="seg-preview w-full h-full absolute inset-0" data-color="#f87171"></canvas>
+            <span class="relative z-10 text-6xl">🫀</span>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              <span class="tag">VMTK</span><span class="tag">CTA</span><span class="tag">VTK</span>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">CTA-Vessel-Tree</h3>
+            <p class="text-slate-400 text-sm mb-4">Aorta &amp; coronary vessel extraction with centerline metrics — diameter, tortuosity, and length — exported as interactive 3D JSON.</p>
+            <div class="flex gap-3">
+              <a href="projects/cta-vessel-tree.html" class="text-primary text-sm hover:underline">Case Study →</a>
+              <a href="https://github.com" target="_blank" class="text-slate-500 text-sm hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card bg-card rounded-xl border border-slate-700 hover:border-primary transition overflow-hidden">
+          <div class="h-44 bg-gradient-to-br from-emerald-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+            <canvas class="seg-preview w-full h-full absolute inset-0" data-color="#34d399"></canvas>
+            <span class="relative z-10 text-6xl">🫁</span>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              <span class="tag">LIDC-IDRI</span><span class="tag">SimpleITK</span><span class="tag">Pandas</span>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">LungNodule-Tracker</h3>
+            <p class="text-slate-400 text-sm mb-4">Longitudinal lung nodule growth analysis on LIDC-IDRI. Volume comparison across timepoints with growth-rate charting.</p>
+            <div class="flex gap-3">
+              <a href="projects/lungnodule-tracker.html" class="text-primary text-sm hover:underline">Case Study →</a>
+              <a href="https://github.com" target="_blank" class="text-slate-500 text-sm hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-card bg-card rounded-xl border border-slate-700 hover:border-primary transition overflow-hidden">
+          <div class="h-44 bg-gradient-to-br from-purple-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+            <canvas class="seg-preview w-full h-full absolute inset-0" data-color="#a78bfa"></canvas>
+            <span class="relative z-10 text-6xl">☢️</span>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              <span class="tag">SlicerRT</span><span class="tag">TCIA</span><span class="tag">Plotly</span>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">DICOM-RT-Dose-Viz</h3>
+            <p class="text-slate-400 text-sm mb-4">Radiation therapy dose color-mapping on Head-Neck CT with interactive DVH curves rendered in the browser via Plotly/Dash.</p>
+            <div class="flex gap-3">
+              <a href="projects/dicom-rt-dose-viz.html" class="text-primary text-sm hover:underline">Case Study →</a>
+              <a href="https://github.com" target="_blank" class="text-slate-500 text-sm hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 5 -->
+        <div class="project-card bg-card rounded-xl border border-slate-700 hover:border-primary transition overflow-hidden">
+          <div class="h-44 bg-gradient-to-br from-orange-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+            <canvas class="seg-preview w-full h-full absolute inset-0" data-color="#fb923c"></canvas>
+            <span class="relative z-10 text-6xl">🔌</span>
+          </div>
+          <div class="p-6">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              <span class="tag">Extension</span><span class="tag">Qt</span><span class="tag">CMake</span>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Slicer-Extension-Demo</h3>
+            <p class="text-slate-400 text-sm mb-4">Packaged, installable 3D Slicer extension with clean Qt UI, Python logic, unit tests, and full Extension Catalog documentation.</p>
+            <div class="flex gap-3">
+              <a href="projects/slicer-extension-demo.html" class="text-primary text-sm hover:underline">Case Study →</a>
+              <a href="https://github.com" target="_blank" class="text-slate-500 text-sm hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="py-24 px-6 max-w-6xl mx-auto">
+    <p class="font-mono text-primary text-xs tracking-widest uppercase mb-2">03 / stack</p>
+    <h2 class="text-3xl font-bold text-white mb-12">Tech Stack</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-primary font-mono text-sm mb-4 uppercase tracking-wider">Core Tools</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>3D Slicer 5.x</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>Python 3.11+</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>ITK / SimpleITK</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>VTK 9.x</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-primary"></span>MONAI 1.x</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-primary font-mono text-sm mb-4 uppercase tracking-wider">Data &amp; DICOM</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span>pydicom / pynetdicom</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span>TCIA REST API</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span>Orthanc PACS</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span>nibabel / NIfTI</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span>OHIF Viewer</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-primary font-mono text-sm mb-4 uppercase tracking-wider">Hosting &amp; DevOps</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>GitHub Pages</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>GitHub Actions CI</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Docker</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Jupyter / nbviewer</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Three.js / VTK.js</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-24 px-6 bg-slate-900/40">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="font-mono text-primary text-xs tracking-widest uppercase mb-2">04 / contact</p>
+      <h2 class="text-3xl font-bold text-white mb-4">Get In Touch</h2>
+      <p class="text-slate-400 mb-8">Open to medical imaging engineering roles, research collaborations, and consulting.</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a href="mailto:your@email.com" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition">Email Me</a>
+        <a href="https://linkedin.com" target="_blank" class="border border-slate-600 hover:border-primary text-slate-300 hover:text-white px-6 py-3 rounded-lg font-semibold transition">LinkedIn</a>
+        <a href="https://github.com" target="_blank" class="border border-slate-600 hover:border-primary text-slate-300 hover:text-white px-6 py-3 rounded-lg font-semibold transition">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-8 text-center text-slate-600 text-sm border-t border-slate-800">
+    <p>Built with HTML · Tailwind CSS · Three.js &nbsp;·&nbsp; Hosted on GitHub Pages</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/hero.js"></script>
+  <script src="js/cards.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoSeg-Brain — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">AutoSeg-Brain</span>
+    </div>
+  </nav>
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">MONAI</span><span class="tag">BraTS 2023</span><span class="tag">SlicerAI</span><span class="tag">nnU-Net</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">AutoSeg-Brain</h1>
+    <p class="text-slate-400 text-lg mb-12">Automated brain tumor segmentation pipeline integrating MONAI inference with 3D Slicer for clinical visualization and PDF report export.</p>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Dataset</p>
+        <p class="text-white font-semibold">BraTS 2023</p>
+        <p class="text-slate-400 text-sm">1,251 multimodal MRI cases (T1, T1Gd, T2, FLAIR)</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Task</p>
+        <p class="text-white font-semibold">3-class Segmentation</p>
+        <p class="text-slate-400 text-sm">Enhancing tumor, tumor core, whole tumor</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Result</p>
+        <p class="text-white font-semibold">Dice ≥ 0.87</p>
+        <p class="text-slate-400 text-sm">On BraTS validation holdout set</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">Pipeline Overview</h2>
+    <div class="bg-card rounded-xl border border-slate-700 p-6 mb-8 font-mono text-sm text-slate-300">
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-3"><span class="text-primary">01</span><span>Load DICOM series → convert to NIfTI (dcm2niix)</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">02</span><span>Pre-process: N4 bias correction, z-score normalization</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">03</span><span>MONAI SegResNet inference → 3-channel probability map</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">04</span><span>Argmax → label NIfTI → load into 3D Slicer as segmentation node</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">05</span><span>Export: 3D rendering screenshot + volume stats PDF</span></div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">Key Code — Slicer Module Entry</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-primary">import</span> slicer, qt, monai
+<span class="text-slate-500"># Triggered by the Slicer scripted module UI</span>
+<span class="text-primary">def</span> <span class="text-sky-300">run_inference</span>(input_volume_node, output_seg_node):
+    nifti_path = export_to_nifti(input_volume_node)
+    label_path = monai_infer(nifti_path)          <span class="text-slate-500"># calls inference.py</span>
+    load_segmentation(label_path, output_seg_node)
+    generate_pdf_report(output_seg_node)</code></pre>
+
+    <div class="flex gap-4">
+      <a href="https://github.com" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://www.cancerimagingarchive.net/collection/brats-2023-gli/" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">BraTS Dataset</a>
+    </div>
+  </main>
+</body>
+</html>

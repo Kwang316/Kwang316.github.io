@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Slicer-Extension-Demo — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">Slicer-Extension-Demo</span>
+    </div>
+  </nav>
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">Extension Wizard</span><span class="tag">Qt / Python</span><span class="tag">CMake</span><span class="tag">Unit Tests</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">Slicer-Extension-Demo</h1>
+    <p class="text-slate-400 text-lg mb-12">A fully packaged, installable 3D Slicer extension — clean Qt UI, Python scripted module logic, automated unit tests, and Extension Catalog submission.</p>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Framework</p>
+        <p class="text-white font-semibold">Slicer 5.x SDK</p>
+        <p class="text-slate-400 text-sm">Extension Wizard + scripted module template</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">UI</p>
+        <p class="text-white font-semibold">Qt Designer</p>
+        <p class="text-slate-400 text-sm">.ui file compiled to Python via uic, clean UX</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Tests</p>
+        <p class="text-white font-semibold">SlicerTestingMacros</p>
+        <p class="text-slate-400 text-sm">Automated via CTest in Slicer's CI framework</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">Extension File Structure</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code>SlicerExtensionDemo/
+├── CMakeLists.txt
+├── SlicerExtensionDemo.cmake          <span class="text-slate-500"># extension metadata</span>
+└── DemoModule/
+    ├── CMakeLists.txt
+    ├── DemoModule.py                  <span class="text-slate-500"># scripted module logic</span>
+    ├── Resources/
+    │   ├── UI/
+    │   │   └── DemoModule.ui          <span class="text-slate-500"># Qt Designer layout</span>
+    │   └── Icons/
+    │       └── DemoModule.png
+    └── Testing/
+        ├── CMakeLists.txt
+        └── Python/
+            └── DemoModuleTest.py      <span class="text-slate-500"># CTest unit tests</span></code></pre>
+
+    <h2 class="text-xl font-bold text-white mb-4">Module Entry Point</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-primary">import</span> slicer
+<span class="text-primary">from</span> slicer.ScriptedLoadableModule <span class="text-primary">import</span> *
+
+<span class="text-primary">class</span> <span class="text-sky-300">DemoModuleWidget</span>(ScriptedLoadableModuleWidget):
+    <span class="text-primary">def</span> <span class="text-sky-300">setup</span>(self):
+        ScriptedLoadableModuleWidget.setup(self)
+        uiWidget = slicer.util.loadUI(self.resourcePath(<span class="text-emerald-400">'UI/DemoModule.ui'</span>))
+        self.layout.addWidget(uiWidget)
+        self.ui = slicer.util.childWidgetVariables(uiWidget)
+        self.ui.applyButton.connect(<span class="text-emerald-400">'clicked(bool)'</span>, self.onApply)
+
+    <span class="text-primary">def</span> <span class="text-sky-300">onApply</span>(self):
+        logic = DemoModuleLogic()
+        logic.process(slicer.mrmlScene.GetFirstNodeByClass(<span class="text-emerald-400">'vtkMRMLScalarVolumeNode'</span>))</code></pre>
+
+    <div class="flex gap-4">
+      <a href="https://github.com" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://slicer.readthedocs.io/en/latest/developer_guide/extensions.html" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">Slicer Ext Docs</a>
+    </div>
+  </main>
+</body>
+</html>

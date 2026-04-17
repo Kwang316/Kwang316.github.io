@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CTA-Vessel-Tree — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">CTA-Vessel-Tree</span>
+    </div>
+  </nav>
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">VMTK</span><span class="tag">ASOCA</span><span class="tag">VTK</span><span class="tag">Centerline</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">CTA-Vessel-Tree</h1>
+    <p class="text-slate-400 text-lg mb-12">Aorta and coronary artery extraction from CTA using VMTK. Outputs centerline metrics and interactive 3D polydata JSON for browser rendering.</p>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Dataset</p>
+        <p class="text-white font-semibold">ASOCA 2020</p>
+        <p class="text-slate-400 text-sm">40 CTA scans with annotated coronary trees</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Metrics</p>
+        <p class="text-white font-semibold">Centerline Analysis</p>
+        <p class="text-slate-400 text-sm">Diameter, length, tortuosity index per branch</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Output</p>
+        <p class="text-white font-semibold">3D JSON + VTP</p>
+        <p class="text-slate-400 text-sm">Browser-renderable vessel mesh via Three.js</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">Extraction Pipeline</h2>
+    <div class="bg-card rounded-xl border border-slate-700 p-6 mb-8 font-mono text-sm text-slate-300">
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-3"><span class="text-primary">01</span><span>CTA DICOM → 3D Slicer volume → threshold-based vessel mask</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">02</span><span>VMTK vmtkMeshGenerator → surface mesh from label</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">03</span><span>vmtkCenterlines → centerline polydata with Voronoi diagram</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">04</span><span>Branch splitting → per-branch diameter / length / tortuosity</span></div>
+        <div class="ml-6 text-slate-600">↓</div>
+        <div class="flex items-center gap-3"><span class="text-primary">05</span><span>VTP export → convert to glTF/JSON for Three.js viewer</span></div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-4">Metrics Export</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-slate-500"># centerline_metrics.py</span>
+<span class="text-primary">import</span> vmtk, vtk, json
+
+<span class="text-primary">def</span> <span class="text-sky-300">compute_metrics</span>(centerline_polydata):
+    branches = split_branches(centerline_polydata)
+    metrics = []
+    <span class="text-primary">for</span> branch <span class="text-primary">in</span> branches:
+        metrics.append({
+            <span class="text-emerald-400">"length_mm"</span>:      compute_length(branch),
+            <span class="text-emerald-400">"mean_diameter_mm"</span>: compute_diameter(branch),
+            <span class="text-emerald-400">"tortuosity"</span>:      compute_tortuosity(branch),
+        })
+    <span class="text-primary">return</span> json.dumps(metrics, indent=2)</code></pre>
+
+    <div class="flex gap-4">
+      <a href="https://github.com" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://asoca.grand-challenge.org/" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">ASOCA Dataset</a>
+    </div>
+  </main>
+</body>
+</html>

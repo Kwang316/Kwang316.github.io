@@ -1,0 +1,31 @@
+name: Lint Python Projects
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint autoseg-brain
+        run: ruff check projects/autoseg-brain/
+
+      - name: Lint cta-vessel-tree
+        run: ruff check projects/cta-vessel-tree/
+
+      - name: Lint lungnodule-tracker
+        run: ruff check projects/lungnodule-tracker/
+
+      - name: Lint dicom-rt-dose-viz
+        run: ruff check projects/dicom-rt-dose-viz/
