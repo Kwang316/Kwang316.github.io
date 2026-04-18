@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anatomy Atlas — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',dark:'#0f172a',card:'#1e293b'}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="bg-dark text-slate-200 font-['Inter']">
+  <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+      <a href="../index.html" class="text-slate-400 hover:text-white text-sm transition">← Back</a>
+      <span class="text-slate-600">/</span>
+      <span class="font-mono text-primary text-sm">Anatomy Atlas</span>
+    </div>
+  </nav>
+
+  <main class="pt-28 pb-24 px-6 max-w-4xl mx-auto">
+
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="tag">Education</span><span class="tag">3D Slicer</span>
+      <span class="tag">VTK</span><span class="tag">No AI</span><span class="tag">Interactive</span>
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-4">Interactive Anatomy Atlas</h1>
+    <p class="text-slate-400 text-lg mb-12">
+      A 3D Slicer education module — click any organ to explore clinical notes,
+      toggle visibility by organ system, and test knowledge with built-in quiz mode.
+      Runs on a synthetic phantom or real CT segmented with TotalSegmentator.
+    </p>
+
+    <!-- Live organ system demo -->
+    <h2 class="text-xl font-bold text-white mb-4">Organ Systems</h2>
+    <div class="flex gap-2 flex-wrap mb-4" id="system-btns">
+      <button onclick="filterSystem('all')"         class="sys-btn active" data-sys="all">All</button>
+      <button onclick="filterSystem('digestive')"   class="sys-btn" data-sys="digestive">🍽 Digestive</button>
+      <button onclick="filterSystem('vascular')"    class="sys-btn" data-sys="vascular">🩸 Vascular</button>
+      <button onclick="filterSystem('respiratory')" class="sys-btn" data-sys="respiratory">🫁 Respiratory</button>
+      <button onclick="filterSystem('urinary')"     class="sys-btn" data-sys="urinary">💧 Urinary</button>
+      <button onclick="filterSystem('skeletal')"    class="sys-btn" data-sys="skeletal">🦴 Skeletal</button>
+      <button onclick="filterSystem('lymphatic')"   class="sys-btn" data-sys="lymphatic">🛡 Lymphatic</button>
+    </div>
+
+    <!-- Organ cards grid -->
+    <div id="organ-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12"></div>
+
+    <!-- Selected organ info panel -->
+    <div id="organ-info" class="hidden bg-card rounded-xl border border-primary p-6 mb-12 transition-all">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h3 id="info-name" class="text-2xl font-bold text-white"></h3>
+          <p id="info-system" class="text-slate-400 text-sm mt-1"></p>
+        </div>
+        <div class="text-right">
+          <p class="text-primary font-mono text-xs uppercase tracking-wider">Normal Volume</p>
+          <p id="info-volume" class="text-white font-bold text-lg"></p>
+        </div>
+      </div>
+      <p id="info-notes" class="text-slate-300 text-sm leading-relaxed mb-4"></p>
+      <div id="info-fact" class="bg-sky-950 border-l-4 border-primary rounded-r-lg px-4 py-3 text-sky-300 text-sm"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Structures</p>
+        <p class="text-white font-semibold text-2xl">15</p>
+        <p class="text-slate-400 text-sm">across 6 organ systems</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Data</p>
+        <p class="text-white font-semibold">Phantom or Real CT</p>
+        <p class="text-slate-400 text-sm">Synthetic phantom runs instantly; TotalSegmentator for real CT</p>
+      </div>
+      <div class="bg-card rounded-xl p-5 border border-slate-700">
+        <p class="text-primary font-mono text-xs uppercase mb-1">Quiz Mode</p>
+        <p class="text-white font-semibold">Interactive</p>
+        <p class="text-slate-400 text-sm">Random highlights, typed answers, live scoring</p>
+      </div>
+    </div>
+
+    <!-- Code snippet -->
+    <h2 class="text-xl font-bold text-white mb-4">Quick Start</h2>
+    <pre class="bg-slate-900 rounded-xl border border-slate-700 p-6 text-sm text-slate-300 overflow-x-auto font-mono mb-8"><code><span class="text-slate-500"># Generate phantom (no CT data needed)</span>
+python generate_phantom.py --out ./phantom
+
+<span class="text-slate-500"># In Slicer: File → Add Data → phantom/segmentation.nii.gz
+# Then: Education → Anatomy Atlas</span>
+
+<span class="text-slate-500"># OR run with real CT:</span>
+python download_totalsegmentator.py --out ./real_data</code></pre>
+
+    <div class="flex gap-4">
+      <a href="https://github.com/Kwang316/anatomy-atlas" class="bg-primary hover:bg-sky-400 text-white px-6 py-3 rounded-lg font-semibold transition text-sm">View on GitHub</a>
+      <a href="https://github.com/wasserth/TotalSegmentator" class="border border-slate-600 hover:border-primary text-slate-300 px-6 py-3 rounded-lg text-sm transition">TotalSegmentator</a>
+    </div>
+
+  </main>
+
+  <style>
+    .sys-btn {
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer;
+      background: #1e293b; border: 1px solid #334155; color: #94a3b8; transition: all .15s;
+    }
+    .sys-btn:hover, .sys-btn.active { background: #0ea5e9; border-color: #0ea5e9; color: white; }
+    .organ-card { cursor: pointer; transition: transform .15s, box-shadow .15s; }
+    .organ-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(14,165,233,.15); }
+    .organ-card.dimmed { opacity: 0.2; pointer-events: none; }
+  </style>
+
+  <script>
+    const ORGANS = {
+      liver:              { name:"Liver",           system:"digestive",   color:"#d97748", volume:"1000–1800 mL", notes:"Largest internal organ. Performs >500 functions including detox, protein synthesis, and bile production.", fact:"The liver can fully regenerate — up to 75% can be removed and it regrows." },
+      spleen:             { name:"Spleen",          system:"lymphatic",   color:"#a33859", volume:"80–300 mL",   notes:"Filters blood and stores platelets. Splenomegaly >500ml is a key finding in portal hypertension.", fact:"The spleen stores up to 1 cup of blood as an emergency reserve." },
+      right_kidney:       { name:"Right Kidney",   system:"urinary",     color:"#cc5938", volume:"100–200 mL",  notes:"Slightly lower than left due to hepatic displacement. Normal length 9–12 cm.", fact:"Each kidney filters all your blood ~40 times per day." },
+      left_kidney:        { name:"Left Kidney",    system:"urinary",     color:"#bf4d2e", volume:"100–200 mL",  notes:"Slightly higher and more medial than right. Left renal vein crosses aorta anteriorly.", fact:"You can live normally with just one kidney." },
+      aorta:              { name:"Aorta",           system:"vascular",    color:"#f22626", volume:"30–80 mL",   notes:"Largest artery. Normal diameter <3 cm; ≥3 cm = aneurysm. AAA rupture carries 80% mortality.", fact:"The aorta is the diameter of a garden hose and pumps ~5L/min." },
+      inferior_vena_cava: { name:"IVC",             system:"vascular",    color:"#3366d6", volume:"20–60 mL",   notes:"Largest vein. Returns blood from lower body to right atrium. IVC thrombus can cause fatal PE.", fact:"The IVC can collapse during deep inspiration — a normal CT finding." },
+      stomach:            { name:"Stomach",         system:"digestive",   color:"#f2c632", volume:"200–1500 mL", notes:"Wall thickness >5mm suggests pathology. J-shaped when empty, boot-shaped when full.", fact:"Stomach acid is strong enough to dissolve razor blades — mucus lining regenerates every 3 days." },
+      pancreas:           { name:"Pancreas",        system:"digestive",   color:"#f59e32", volume:"60–150 mL",  notes:"Both exocrine and endocrine. PDAC has the worst 5-year survival of any major cancer (~11%).", fact:"Pancreas produces ~1.5L of digestive juice per day." },
+      gallbladder:        { name:"Gallbladder",     system:"digestive",   color:"#8cc04c", volume:"20–50 mL",   notes:"Stores and concentrates bile. Wall >3mm + pericholecystic fluid = cholecystitis.", fact:"The gallbladder concentrates bile up to 10×." },
+      urinary_bladder:    { name:"Bladder",         system:"urinary",     color:"#8a55d6", volume:"50–500 mL",  notes:"Wall >3mm when full, >5mm when empty suggests pathology. Trigone is most common cancer site.", fact:"A full bladder holds ~600ml — the same as a large soda can." },
+      right_lung:         { name:"Right Lung",      system:"respiratory", color:"#a6d1eb", volume:"1500–2500 mL", notes:"3 lobes. Right main bronchus is more vertical — inhaled foreign bodies lodge here preferentially.", fact:"Right lung has 3 lobes; left has 2 — to make room for the heart." },
+      left_lung:          { name:"Left Lung",       system:"respiratory", color:"#8bbfe6", volume:"1200–2000 mL", notes:"2 lobes with cardiac notch. Left lower lobe most common aspiration pneumonia site in supine patients.", fact:"Lungs have ~70 m² surface area — the size of a tennis court." },
+      vertebrae:          { name:"Vertebrae",       system:"skeletal",    color:"#e8e4d0", volume:"—",           notes:"33 vertebrae total. Osteoporosis if L1 <110 HU. Vertebral fractures are most common osteoporotic fracture.", fact:"You are ~1 cm taller in the morning — discs decompress overnight." },
+      ribs:               { name:"Ribs",            system:"skeletal",    color:"#e0dcc8", volume:"—",           notes:"12 pairs: 7 true, 3 false, 2 floating. Multiple adjacent fractures = flail chest (surgical emergency).", fact:"Rib 1 is the shortest and most curved — rarely fractured except by major trauma." },
+      portal_vein:        { name:"Portal Vein",     system:"vascular",    color:"#5580e6", volume:"20–60 mL",   notes:"Carries nutrient-rich blood from gut to liver. Normal diameter <13mm; >13mm = portal hypertension.", fact:"The portal vein supplies 75% of the liver's blood." },
+    };
+
+    const SYSTEMS = {
+      digestive:   '#f97316', vascular: '#ef4444', respiratory: '#38bdf8',
+      urinary:     '#a855f7', skeletal: '#e2e8f0', lymphatic:   '#ec4899', all: '#0ea5e9'
+    };
+
+    function buildGrid(filter) {
+      const grid = document.getElementById('organ-grid');
+      grid.innerHTML = '';
+      Object.entries(ORGANS).forEach(([key, o]) => {
+        const dimmed = filter !== 'all' && o.system !== filter;
+        const card = document.createElement('div');
+        card.className = `organ-card bg-card rounded-xl border border-slate-700 p-4 ${dimmed ? 'dimmed' : ''}`;
+        card.innerHTML = `
+          <div class="w-8 h-8 rounded-full mb-3" style="background:${o.color}"></div>
+          <p class="text-white font-semibold text-sm mb-1">${o.name}</p>
+          <p class="text-slate-500 text-xs capitalize">${o.system}</p>`;
+        card.onclick = () => showInfo(key);
+        grid.appendChild(card);
+      });
+    }
+
+    function filterSystem(sys) {
+      document.querySelectorAll('.sys-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.sys === sys));
+      buildGrid(sys);
+    }
+
+    function showInfo(key) {
+      const o   = ORGANS[key];
+      const col = SYSTEMS[o.system] || '#0ea5e9';
+      document.getElementById('info-name').textContent    = o.name;
+      document.getElementById('info-system').textContent  = o.system.charAt(0).toUpperCase() + o.system.slice(1) + ' System';
+      document.getElementById('info-volume').textContent  = o.volume;
+      document.getElementById('info-notes').textContent   = o.notes;
+      document.getElementById('info-fact').textContent    = '💡 ' + o.fact;
+      document.getElementById('organ-info').classList.remove('hidden');
+      document.getElementById('organ-info').style.borderColor = col;
+    }
+
+    buildGrid('all');
+  </script>
+</body>
+</html>
